@@ -3,7 +3,6 @@ package com.pluralsight.blog.model;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.lang.reflect.Method;
 import java.text.DateFormat;
@@ -18,7 +17,8 @@ public class Post {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String title;
-    @Column(length=1000000)
+    private String subtitle;
+    @Column(length = 1000000)
     @Lob
     private String body;
     @Temporal(TemporalType.DATE)
@@ -29,10 +29,15 @@ public class Post {
         super();
     }
 
-    public Post(String title, String body){//, Author author) {
+    public Post(String title, String body) {
         this();
         this.title = title;
         this.body = body;
+    }
+
+    public Post(String title, String body, String subtitle) {//, Author author) {
+        this(title, body);
+        this.subtitle = subtitle;
     }
 
     public Long getId() {
@@ -49,6 +54,14 @@ public class Post {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public String getSubTitle() {
+        return subtitle;
+    }
+
+    public void setSubTitle(String subtitle) {
+        this.subtitle = subtitle;
     }
 
     public String getBody() {
@@ -74,10 +87,10 @@ public class Post {
 
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof Post))
-            return false;
-        Post otherPost = (Post)obj;
+        if (!(obj instanceof Post)) { return false; }
+        Post otherPost = (Post) obj;
         return this.title.equals(otherPost.getTitle()) &&
-               this.body.equals(otherPost.getBody());
+                this.body.equals(otherPost.getBody()) &&
+                this.subtitle.equals((otherPost.getSubTitle()));
     }
 }

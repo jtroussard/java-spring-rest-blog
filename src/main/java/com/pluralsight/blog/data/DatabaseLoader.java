@@ -18,10 +18,20 @@ public class DatabaseLoader implements ApplicationRunner {
             "Smart Home %s", "Mobile %s - For When You're On he Go", "The %s - Your New Favorite Accessory"};
     private final String[] gadgets = {
             "Earbuds", "Speakers", "Tripod", "Instant Pot", "Coffee Cup", "Keyboard", "Sunglasses"};
+
+    private final String[] subTemplates = {
+            "This %s is the real deal!", "%s - For anyone.", "The %s - Dangerous or Safe?"};
+    private final String[] subGadgets = {
+            "Water Bottle", "Toothpick", "Lobster", "Old Fashion Radiator", "Tin Cup", "Antenna", "Boots"};
+
     public List<Post> randomPosts = new ArrayList<>();
     public List<Author> authors = new ArrayList<>();
 
-    public DatabaseLoader() {
+    private final PostRepository postRepository;
+
+    @Autowired
+    public DatabaseLoader(PostRepository postRepository) {
+        this.postRepository = postRepository;
     }
 
     @Override
@@ -29,10 +39,15 @@ public class DatabaseLoader implements ApplicationRunner {
         IntStream.range(0,40).forEach(i->{
             String template = templates[i % templates.length];
             String gadget = gadgets[i % gadgets.length];
+            String subtitleTemplate = subTemplates[i % subTemplates.length];
+            String subtitleGadget = subGadgets[i % subGadgets.length];
 
             String title = String.format(template, gadget);
-            Post post = new Post(title, "Lorem ipsum dolor sit amet, consectetur adipiscing elit… ");
-            randomPosts.add(post);
+            String subtitle = String.format(subtitleTemplate, subtitleGadget);
+            Post post = new Post(title, "Lorem ipsum dolor sit amet, consectetur adipiscing elit… ", subtitle);
+//            System.out.println(title + ": " + subtitle + "\n" + post.getTitle() + ": " + post.getSubTitle() + "\n\n");
+            this.randomPosts.add(post);
         });
+        this.postRepository.saveAll(randomPosts);
     }
 }

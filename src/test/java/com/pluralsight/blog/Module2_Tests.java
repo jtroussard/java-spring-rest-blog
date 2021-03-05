@@ -3,41 +3,31 @@ package com.pluralsight.blog;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.pluralsight.blog.data.AuthorRepository;
 import com.pluralsight.blog.data.DatabaseLoader;
+import com.pluralsight.blog.data.PostRepository;
 import com.pluralsight.blog.model.Author;
 import com.pluralsight.blog.model.Post;
-import com.pluralsight.blog.data.PostRepository;
-import org.apache.commons.io.IOUtils;
-import org.hibernate.Hibernate;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.DefaultApplicationArguments;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.repository.cdi.Eager;
-import org.springframework.data.rest.core.annotation.RepositoryRestResource;
-import org.springframework.test.context.junit4.SpringRunner;
-
-import javax.persistence.*;
-import java.io.IOException;
-import java.io.InputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.IntStream;
-
-import static org.junit.Assert.*;
+import org.hibernate.Hibernate;
+import org.hibernate.LazyInitializationException;
+import org.hibernate.mapping.ManyToOne;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.rest.core.annotation.RepositoryRestResource;
+import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -282,7 +272,7 @@ public class Module2_Tests {
                 }
                 else
                     authorsEqual = false;
-            } catch (org.hibernate.LazyInitializationException e) {
+            } catch (LazyInitializationException e) {
                 e.printStackTrace();
                 assertTrue("Task 2: The author's `@ManyToOne` annotation does not have `(fetch = FetchType.EAGER)`.", false);
             } catch (IndexOutOfBoundsException e){
